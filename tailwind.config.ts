@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        headline: ['Orbitron', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -71,6 +71,10 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      boxShadow: {
+        'neon-primary': '0 0 12px hsl(var(--primary) / 0.55)',
+        'neon-secondary': '0 0 10px hsl(var(--secondary) / 0.55)',
+      },
       keyframes: {
         'accordion-down': {
           from: {
@@ -88,10 +92,15 @@ export default {
             height: '0',
           },
         },
+        glow: {
+          '0%, 100%': { opacity: '0.7', textShadow: '0 0 8px hsl(var(--primary) / 0.6)' },
+          '50%': { opacity: '1', textShadow: '0 0 12px hsl(var(--primary) / 0.8)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        glow: 'glow 2.5s ease-in-out infinite',
       },
     },
   },
