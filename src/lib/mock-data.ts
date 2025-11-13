@@ -1,14 +1,14 @@
 import type { ChartConfig } from '@/components/ui/chart';
 
 export const user = {
-  name: 'Alex C.',
+  name: 'Gabi S.',
   avatarId: 'user-avatar',
 };
 
 export const progressMetrics = [
-  { title: 'Cursos Completados', value: '8', change: '+1 este mes' },
-  { title: 'Calificación Prom.', value: '92%', change: '+3%' },
-  { title: 'Horas de Estudio', value: '128', change: '+20 horas' },
+  { title: 'Monedas Acumuladas', value: '30', change: '+1 este mes' },
+  { title: 'Cantidad de Clicks', value: '120', change: '+3%' },
+  { title: 'Horas de Juego', value: '128', change: '+20 horas' },
   { title: 'Logros Desbloq.', value: '24', change: '+5' },
 ];
 
@@ -111,30 +111,30 @@ export const recentAchievements = [
 ];
 
 export const studyTimeData = [
-  { name: 'C. Cuántica', hours: 40, fill: 'var(--color-chart-1)' },
-  { name: 'IA Ética', hours: 25, fill: 'var(--color-chart-2)' },
-  { name: 'Redes N.', hours: 35, fill: 'var(--color-chart-3)' },
-  { name: 'Ciberseg.', hours: 28, fill: 'var(--color-chart-4)' },
+  { name: 'Sesión promedio', hours: 40, fill: 'var(--color-chart-1)' },
+  { name: 'Días consecutivos', hours: 25, fill: 'var(--color-chart-2)' },
+  { name: 'CPS', hours: 35, fill: 'var(--color-chart-3)' },
+  { name: 'Puntos Pico', hours: 28, fill: 'var(--color-chart-4)' },
 ];
 
 export const studyTimeChartConfig = {
   hours: {
     label: 'Horas',
   },
-  'C. Cuántica': {
-    label: 'C. Cuántica',
+  'Sesión promedio': {
+    label: 'Sesión promedio',
     color: 'hsl(var(--chart-1))',
   },
-  'IA Ética': {
-    label: 'IA Ética',
+  'Días consecutivos': {
+    label: 'Días consecutivos',
     color: 'hsl(var(--chart-2))',
   },
-  'Redes N.': {
-    label: 'Redes N.',
+  'CPS': {
+    label: 'Clicks por segundo (CPS)',
     color: 'hsl(var(--chart-3))',
   },
-  Ciberseg: {
-    label: 'Ciberseg.',
+  'Puntos Pico': {
+    label: 'Puntos Pico',
     color: 'hsl(var(--chart-4))',
   },
 } satisfies ChartConfig;

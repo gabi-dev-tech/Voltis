@@ -1,9 +1,9 @@
-import { progressMetrics } from '@/lib/mock-data';
+// import { progressMetrics } from '@/lib/mock-data';
 import { ArrowUpRight } from 'lucide-react';
 import { CardContent, CardHeader, CardTitle } from '../ui/card';
 import { CyberCard } from './cyber-card';
 
-export function ProgressMetrics() {
+export function ProgressMetrics({ progressMetrics }: { progressMetrics: { title: string; value: number; change: string }[]  }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {progressMetrics.map((metric, index) => (

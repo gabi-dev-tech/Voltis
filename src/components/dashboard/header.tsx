@@ -11,7 +11,7 @@ export function DashboardHeader() {
     <header className="flex items-center justify-between mb-8">
       <div>
         <h1 className="text-3xl font-headline tracking-wider text-primary animate-glow">
-          EduCyber Dashboard
+          Voltis
         </h1>
         <p className="text-muted-foreground">
           Bienvenido de nuevo, {user.name}.

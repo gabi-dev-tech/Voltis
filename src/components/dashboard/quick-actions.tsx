@@ -1,9 +1,12 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import { BookOpenCheck, GraduationCap, UploadCloud } from 'lucide-react';
 import { CardContent, CardHeader, CardTitle } from '../ui/card';
 import { CyberCard } from './cyber-card';
+import { useState } from 'react';
 
-export function QuickActions() {
+export function QuickActions(props: { handlePlayGame: () => void }) {
+
   return (
     <CyberCard>
       <CardHeader>
@@ -18,20 +21,21 @@ export function QuickActions() {
             size="lg"
             className="h-20 text-lg border-primary/50 hover:bg-primary/10 hover:text-primary transition-all duration-300"
           >
-            <BookOpenCheck className="mr-3 h-6 w-6" /> Acceder a Clases
+            <BookOpenCheck className="mr-3 h-6 w-6" /> Acceder a Perfil
           </Button>
           <Button
             size="lg"
             className="h-20 text-lg transition-all duration-300 hover:shadow-neon-primary"
+            onClick={props.handlePlayGame}
           >
-            <UploadCloud className="mr-3 h-6 w-6" /> Entregar Tareas
+            <UploadCloud className="mr-3 h-6 w-6" /> Jugar
           </Button>
           <Button
             variant="outline"
             size="lg"
             className="h-20 text-lg border-secondary/50 text-secondary hover:bg-secondary/10 hover:shadow-neon-secondary transition-all duration-300"
           >
-            <GraduationCap className="mr-3 h-6 w-6" /> Ver Calificaciones
+            <GraduationCap className="mr-3 h-6 w-6" /> Calificaciones Globales
           </Button>
         </div>
       </CardContent>

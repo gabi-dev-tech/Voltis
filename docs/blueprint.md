@@ -1,4 +1,4 @@
-# **App Name**: EduCyber Dashboard
+# **App Name**: Voltis
 
 ## Core Features:
 
