@@ -5,6 +5,9 @@ import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { ProgressMetrics } from "@/components/dashboard/progress-metrics";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { StudyTimeAnalysis } from "@/components/dashboard/study-time-analysis";
+const coinSound = "/sounds/coin.mp3";
+const clickSound = "/sounds/drop-coin.mp3";
+const powerSound = "/sounds/power.mp3";
 // import { ActiveCourses } from '@/components/dashboard/active-courses';
 // import { RecentAchievements } from '@/components/dashboard/recent-achievements';
 // import { TodoList } from '@/components/dashboard/todo-list';
@@ -16,8 +19,10 @@ export default function Home() {
     { title: "Horas de Juego", value: 0, change: "+20 horas" },
     { title: "Logros Desbloq.", value: 0, change: "+5" },
   ]);
+  const [power, setPower] = useState(false);
 
   const addCoin = () => {
+    new Audio(coinSound).play();
     const newMetrics = [...progressMetrics];
     if (newMetrics[1].value == 5) {
       newMetrics[0].value = newMetrics[0].value + 10;
@@ -33,6 +38,17 @@ export default function Home() {
     setProgressMetrics(newMetrics);
   };
 
+  const restCoin = () => {
+    const newMetrics = [...progressMetrics];
+    if (newMetrics[0].value <= 250)
+      return alert(
+        "No tienes suficientes monedas para activar el potenciador."
+      );
+    new Audio(powerSound).play();
+    newMetrics[0].value = Math.max(0, newMetrics[0].value - 250);
+    setProgressMetrics(newMetrics);
+  };
+
   const addAchievement = () => {
     const newMetrics = [...progressMetrics];
     newMetrics[3].value = newMetrics[3].value + 1;
@@ -40,8 +56,13 @@ export default function Home() {
   };
 
   const handlePlayGame = () => {
+    new Audio(clickSound).play();
     const newMetrics = [...progressMetrics];
-    newMetrics[1].value = newMetrics[1].value + 1;
+    if (power) {
+      newMetrics[1].value = newMetrics[1].value + 2;
+    } else {
+      newMetrics[1].value = newMetrics[1].value + 1;
+    }
     setProgressMetrics(newMetrics);
 
     if (newMetrics[1].value == 5) {
@@ -77,7 +98,13 @@ export default function Home() {
           </div>
 
           <div className="col-span-12">
-            <QuickActions handlePlayGame={handlePlayGame} />
+            <QuickActions
+              progressMetrics={progressMetrics}
+              handlePlayGame={handlePlayGame}
+              restCoin={restCoin}
+              power={power}
+              setPower={setPower}
+            />
           </div>
 
           <div className="col-span-12 xl:col-span-8">

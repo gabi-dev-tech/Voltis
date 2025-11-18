@@ -1,11 +1,26 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { BookOpenCheck, GraduationCap, UploadCloud } from 'lucide-react';
-import { CardContent, CardHeader, CardTitle } from '../ui/card';
-import { CyberCard } from './cyber-card';
-import { useState } from 'react';
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  BatteryCharging,
+  GraduationCap,
+  Zap,
+} from "lucide-react";
+import { CardContent, CardHeader, CardTitle } from "../ui/card";
+import { CyberCard } from "./cyber-card";
 
-export function QuickActions(props: { handlePlayGame: () => void }) {
+export function QuickActions(props: {
+  handlePlayGame: () => void;
+  restCoin: () => void;
+  power: boolean;
+  setPower: React.Dispatch<React.SetStateAction<boolean>>;
+  progressMetrics: { title: string; value: number; change: string }[];
+}) {
+  const newMetrics = [...props.progressMetrics];
+  const handlePower = () => {
+    props.setPower(true);
+    props.restCoin();
+    setTimeout(() => props.setPower(false), 5000);
+  };
 
   return (
     <CyberCard>
@@ -17,18 +32,30 @@ export function QuickActions(props: { handlePlayGame: () => void }) {
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Button
-            variant="outline"
-            size="lg"
-            className="h-20 text-lg border-primary/50 hover:bg-primary/10 hover:text-primary transition-all duration-300"
+            variant={"ghost"}
+            disabled={props.power}
+            onClick={handlePower}
+            className="relative flex items-center justify-center h-20 px-4 text-lg border border-primary/50 text-primary transition-all duration-300 rounded-md"
           >
-            <BookOpenCheck className="mr-3 h-6 w-6" /> Acceder a Perfil
+            <span
+              className={`absolute top-0 left-0 h-full bg-primary/10 transition-[width] duration-1000 ease-in-out rounded-md ${
+                newMetrics[0].value <= 250
+                  ? "w-full rounded-r-md"
+                  : "w-0 rounded-l-md"
+              }`}
+            ></span>
+
+            <div className="relative flex items-center justify-center gap-3 z-10">
+              <BatteryCharging className="h-10 w-10" />
+              Potenciador
+            </div>
           </Button>
           <Button
             size="lg"
-            className="h-20 text-lg transition-all duration-300 hover:shadow-neon-primary"
+            className="h-20 text-lg transition-all duration-300 hover:shadow-neon-primary active:scale-95 active:shadow-neon-primary/80"
             onClick={props.handlePlayGame}
           >
-            <UploadCloud className="mr-3 h-6 w-6" /> Jugar
+            <Zap className="h-6 w-6" /> Jugar
           </Button>
           <Button
             variant="outline"
