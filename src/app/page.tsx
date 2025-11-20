@@ -40,12 +40,12 @@ export default function Home() {
 
   const restCoin = () => {
     const newMetrics = [...progressMetrics];
-    if (newMetrics[0].value <= 250)
+    if (newMetrics[0].value <= 100)
       return alert(
         "No tienes suficientes monedas para activar el potenciador."
       );
     new Audio(powerSound).play();
-    newMetrics[0].value = Math.max(0, newMetrics[0].value - 250);
+    newMetrics[0].value = Math.max(0, newMetrics[0].value - 100);
     setProgressMetrics(newMetrics);
   };
 

@@ -96,11 +96,16 @@ export default {
           '0%, 100%': { opacity: '0.7', textShadow: '0 0 8px hsl(var(--primary) / 0.6)' },
           '50%': { opacity: '1', textShadow: '0 0 12px hsl(var(--primary) / 0.8)' },
         },
+        flash: {
+          '0%, 100%': { opacity: '0.1', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.05)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         glow: 'glow 2.5s ease-in-out infinite',
+        'lightning-flash': 'flash 1.2s ease-in-out infinite',
       },
     },
   },
