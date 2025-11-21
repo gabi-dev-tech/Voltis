@@ -1,10 +1,13 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { user } from '@/lib/mock-data';
-import { Bell } from 'lucide-react';
-import { Button } from '../ui/button';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+"use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { user } from "@/lib/mock-data";
+import { Bell } from "lucide-react";
+import { Button } from "../ui/button";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export function DashboardHeader() {
+  const { data: session } = useSession();
   const userAvatar = PlaceHolderImages.find((p) => p.id === user.avatarId);
 
   return (
@@ -13,9 +16,11 @@ export function DashboardHeader() {
         <h1 className="text-3xl font-headline tracking-wider text-primary animate-glow">
           Voltis
         </h1>
-        <p className="text-muted-foreground">
-          Bienvenido de nuevo, {user.name}.
-        </p>
+        {session?.user && (
+          <p className="text-muted-foreground">
+            Bienvenido de nuevo, {session?.user.name}.
+          </p>
+        )}
       </div>
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" className="relative">
@@ -25,14 +30,24 @@ export function DashboardHeader() {
             <span className="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
           </span>
         </Button>
-        <Avatar className="border-2 border-primary/50">
-          <AvatarImage
-            src={userAvatar?.imageUrl}
-            alt={user.name}
-            data-ai-hint={userAvatar?.imageHint}
-          />
-          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-        </Avatar>
+
+        {session?.user ? (
+          <>
+            <Button onClick={() => signOut()}>Logout</Button>
+            <Avatar className="border-2 border-primary/50">
+              <AvatarImage
+                src={session?.user?.image || userAvatar?.imageUrl}
+                alt={session?.user?.name || user.name}
+                data-ai-hint={session?.user?.name || userAvatar?.imageHint}
+              />
+              <AvatarFallback>
+                {session.user.name || user.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+          </>
+        ) : (
+          <Button onClick={() => signIn()}>Login</Button>
+        )}
       </div>
     </header>
   );

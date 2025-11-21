@@ -34,7 +34,7 @@ export function QuickActions(props: {
             onClick={handlePower}
             className="relative flex items-center justify-center h-20 px-4 text-lg border border-primary/50 text-primary transition-all duration-300 rounded-md"
           >
-            {newMetrics[0].value >= 100 || props.power && (
+            {newMetrics[0].value >= 100 && (
               <>
                 <span className="absolute w-full h-full bg-secondary/50 rounded-md animate-lightning-flash delay-100 -z-10"></span>
                 <img

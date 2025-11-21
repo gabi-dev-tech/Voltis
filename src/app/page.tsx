@@ -1,10 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { ProgressMetrics } from "@/components/dashboard/progress-metrics";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { StudyTimeAnalysis } from "@/components/dashboard/study-time-analysis";
+import { useSession } from "next-auth/react";
+import useActiveTimeTracker from "@/hooks/use-time-tracker";
 const coinSound = "/sounds/coin.mp3";
 const clickSound = "/sounds/drop-coin.mp3";
 const powerSound = "/sounds/power.mp3";
@@ -13,13 +15,23 @@ const powerSound = "/sounds/power.mp3";
 // import { TodoList } from '@/components/dashboard/todo-list';
 
 export default function Home() {
+  const { data: session } = useSession();
+  const [power, setPower] = useState(false);
   const [progressMetrics, setProgressMetrics] = useState([
     { title: "Monedas Acumuladas", value: 0, change: "+1 este mes" },
     { title: "Cantidad de Clicks", value: 0, change: "+3%" },
-    { title: "Horas de Juego", value: 0, change: "+20 horas" },
+    { title: "Minutos de Juego", value: 0, change: "+20 horas" },
     { title: "Logros Desbloq.", value: 0, change: "+5" },
   ]);
-  const [power, setPower] = useState(false);
+
+  let isLoggedIn = session?.user ? true : false;
+  const { hours, minutes, seconds } = useActiveTimeTracker(isLoggedIn);
+
+  const setTimme = () => {
+    const newMetrics = [...progressMetrics];
+    newMetrics[2].value = minutes;
+    setProgressMetrics(newMetrics);
+  };
 
   const addCoin = () => {
     new Audio(coinSound).play();
@@ -86,6 +98,10 @@ export default function Home() {
       alert("¡Has desbloqueado un logro secreto por jugar 100 veces!");
     }
   };
+
+  useEffect(() => {
+    setTimme();
+  }, [minutes]);
 
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8">

@@ -1,5 +1,2 @@
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+Login google: 
+https://console.cloud.google.com/auth/clients?project=gen-lang-client-0561181449
