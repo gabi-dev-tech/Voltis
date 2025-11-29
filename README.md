@@ -1,8 +1,3 @@
-Login google: 
-https://console.cloud.google.com/auth/clients?project=gen-lang-client-0561181449
-
-
-
 Todo List:
 - Corre el siguiente comando:
 npm install firebase
@@ -37,17 +32,3 @@ npm install -g firebase-tools
 firebase login
 firebase init
 firebase deploy
-
-- Link:
-https://console.firebase.google.com/u/0/project/voltis-8d73e/overview?hl=es-419
-
-
-* Links en Produccion:
-
-- Link de Firebase backend:
-https://studio.firebase.google.com/api-rest-voltis-17051595
-
-- Link de firebase DB:
-https://console.firebase.google.com/u/0/project/voltis-8d73e/firestore/databases/-default-/data?hl=es-419
-
-

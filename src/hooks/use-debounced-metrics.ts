@@ -12,7 +12,6 @@ export interface Metric {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE!;
 const METRICS_PATH = "/metrics";
 const METRICS_URL = API_BASE_URL ? `${API_BASE_URL}${METRICS_PATH}` : "/api/metrics";
-console.log('debug METRICS_URL -->', METRICS_URL);
 // Debounce time increased to 30 seconds
 const STORAGE_KEY = process.env.NEXT_PUBLIC_STORAGE_KEY!;
 const DEBOUNCE_MS = 30000;
