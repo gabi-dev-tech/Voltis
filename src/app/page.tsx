@@ -7,6 +7,7 @@ import { QuickActions } from "@/components/dashboard/quick-actions";
 import { StudyTimeAnalysis } from "@/components/dashboard/study-time-analysis";
 import { useSession } from "next-auth/react";
 import useActiveTimeTracker from "@/hooks/use-time-tracker";
+import useDebouncedMetrics, { Metric } from "@/hooks/use-debounced-metrics";
 const coinSound = "/sounds/coin.mp3";
 const clickSound = "/sounds/drop-coin.mp3";
 const powerSound = "/sounds/power.mp3";
@@ -17,102 +18,97 @@ const powerSound = "/sounds/power.mp3";
 export default function Home() {
   const { data: session } = useSession();
   const [power, setPower] = useState(false);
-  const [progressMetrics, setProgressMetrics] = useState([
-    { title: "Monedas Acumuladas", value: 0, change: "+1 este mes" },
-    { title: "Cantidad de Clicks", value: 0, change: "+3%" },
-    { title: "Minutos de Juego", value: 0, change: "+20 horas" },
-    { title: "Logros Desbloq.", value: 0, change: "+5" },
-  ]);
+
+  const [progressMetrics, setProgressMetrics] = useDebouncedMetrics(session);
 
   let isLoggedIn = session?.user ? true : false;
   const { hours, minutes, seconds } = useActiveTimeTracker(isLoggedIn);
 
+  // Use setProgressMetrics updater to change values synchronously and trigger debounced sync.
   const setTimme = () => {
-    const newMetrics = [...progressMetrics];
-    newMetrics[2].value = minutes;
-    setProgressMetrics(newMetrics);
+    setProgressMetrics((prev) => {
+      const newMetrics = [...prev];
+      newMetrics[2] = { ...newMetrics[2], value: minutes };
+      return newMetrics;
+    });
   };
 
   const addCoin = () => {
     new Audio(coinSound).play();
-    const newMetrics = [...progressMetrics];
-    if (newMetrics[1].value == 5) {
-      newMetrics[0].value = newMetrics[0].value + 10;
-    } else if (newMetrics[1].value == 20) {
-      newMetrics[0].value = newMetrics[0].value + 25;
-    } else if (newMetrics[1].value == 50) {
-      newMetrics[0].value = newMetrics[0].value + 75;
-    } else if (newMetrics[1].value == 100) {
-      newMetrics[0].value = newMetrics[0].value + 150;
-    } else {
-      newMetrics[0].value = newMetrics[0].value + 1;
-    }
-    setProgressMetrics(newMetrics);
+    setProgressMetrics((prev) => {
+      const newMetrics = [...prev];
+      const count = newMetrics[1].value;
+      let bonus = 1;
+      if (count == 5) bonus = 10;
+      else if (count == 20) bonus = 25;
+      else if (count == 50) bonus = 75;
+      else if (count == 100) bonus = 150;
+      newMetrics[0] = { ...newMetrics[0], value: newMetrics[0].value + bonus };
+      return newMetrics;
+    });
   };
 
   const restCoin = () => {
-    const newMetrics = [...progressMetrics];
-    if (newMetrics[0].value <= 100)
-      return alert(
-        "No tienes suficientes monedas para activar el potenciador."
-      );
-    new Audio(powerSound).play();
-    newMetrics[0].value = Math.max(0, newMetrics[0].value - 100);
-    setProgressMetrics(newMetrics);
+    setProgressMetrics((prev) => {
+      const newMetrics = [...prev];
+      if (newMetrics[0].value <= 100) {
+        alert("No tienes suficientes monedas para activar el potenciador.");
+        return prev;
+      }
+      new Audio(powerSound).play();
+      newMetrics[0] = { ...newMetrics[0], value: Math.max(0, newMetrics[0].value - 100) };
+      return newMetrics;
+    });
   };
 
   const addAchievement = () => {
-    const newMetrics = [...progressMetrics];
-    newMetrics[3].value = newMetrics[3].value + 1;
-    setProgressMetrics(newMetrics);
+    setProgressMetrics((prev) => {
+      const newMetrics = [...prev];
+      newMetrics[3] = { ...newMetrics[3], value: newMetrics[3].value + 1 };
+      return newMetrics;
+    });
   };
 
   const handlePlayGame = () => {
     new Audio(clickSound).play();
-    const newMetrics = [...progressMetrics];
-    if (power) {
-      newMetrics[1].value = newMetrics[1].value + 2;
-    } else {
-      newMetrics[1].value = newMetrics[1].value + 1;
-    }
-    setProgressMetrics(newMetrics);
+    // single state update: update clicks and add rewards if milestone reached
+    setProgressMetrics((prev) => {
+      const newMetrics = [...prev];
+      const prevClicks = newMetrics[1].value;
+      const delta = power ? 2 : 1;
+      const newCount = prevClicks + delta;
+      newMetrics[1] = { ...newMetrics[1], value: newCount };
 
-    if (newMetrics[1].value == 5) {
-      addAchievement();
-      addCoin();
-      alert("¡Has desbloqueado un logro secreto por jugar 5 veces!");
-    }
-    if (newMetrics[1].value == 20) {
-      addAchievement();
-      addCoin();
-      alert("¡Has desbloqueado un logro secreto por jugar 20 veces!");
-    }
-    if (newMetrics[1].value == 50) {
-      addAchievement();
-      addCoin();
-      alert("¡Has desbloqueado un logro secreto por jugar 50 veces!");
-    }
-    if (newMetrics[1].value == 100) {
-      addAchievement();
-      addCoin();
-      alert("¡Has desbloqueado un logro secreto por jugar 100 veces!");
-    }
+      if (newCount === 5 || newCount === 20 || newCount === 50 || newCount === 100) {
+        // award achievement and coins in same state update (no need to call separate helpers)
+        newMetrics[3] = { ...newMetrics[3], value: newMetrics[3].value + 1 };
+
+        // coin bonuses (same logic as addCoin)
+        if (newCount === 5) newMetrics[0] = { ...newMetrics[0], value: newMetrics[0].value + 10 };
+        if (newCount === 20) newMetrics[0] = { ...newMetrics[0], value: newMetrics[0].value + 25 };
+        if (newCount === 50) newMetrics[0] = { ...newMetrics[0], value: newMetrics[0].value + 75 };
+        if (newCount === 100) newMetrics[0] = { ...newMetrics[0], value: newMetrics[0].value + 150 };
+        // small UX alert (still immediate)
+        setTimeout(() => alert(`¡Has desbloqueado un logro secreto por jugar ${newCount} veces!`), 0);
+      }
+
+      return newMetrics;
+    });
   };
 
   useEffect(() => {
     setTimme();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minutes]);
 
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8">
       <div className="max-w-screen-2xl mx-auto">
         <DashboardHeader />
-
         <main className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
             <ProgressMetrics progressMetrics={progressMetrics} />
           </div>
-
           <div className="col-span-12">
             <QuickActions
               progressMetrics={progressMetrics}
@@ -122,23 +118,9 @@ export default function Home() {
               setPower={setPower}
             />
           </div>
-
           <div className="col-span-12 xl:col-span-8">
             <PerformanceChart />
           </div>
-
-          {/* <div className="col-span-12 md:col-span-6 xl:col-span-4">
-            <ActiveCourses />
-          </div> */}
-
-          {/* <div className="col-span-12 md:col-span-6 xl:col-span-4">
-            <TodoList />
-          </div> */}
-
-          {/* <div className="col-span-12 md:col-span-6 xl:col-span-4">
-            <RecentAchievements />
-          </div> */}
-
           <div className="col-span-12 md:col-span-6 xl:col-span-4">
             <StudyTimeAnalysis />
           </div>
